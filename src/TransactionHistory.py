@@ -10,11 +10,10 @@ class TransactionHistory:
         self.array = self.array.append((date, amount))
 
     def avg_transaction_amt(self):
-        return np.mean(np.array(self.array)[:1])
+        return np.mean(np.array(self.array), axis = 0)[-1]
     
     def transactions_in_last_24_hours(self):
-        unix_timestamp = (datetime.utcnow() - datetime(1970, 1, 1)).total_seconds()
-        return list(filter(lambda x : x > unix_timestamp - 60*60*24, self.array)).count()
-        
+        unix_timestamp = int(time.time()/86400)
+        return len(list(filter(lambda x : x[0] >= unix_timestamp - 1, self.array)))    
 
     

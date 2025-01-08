@@ -3,7 +3,7 @@ import time
 from Block import Block
 
 class ContractBlock(Block):
-    def __init__(self, sender, receiver, amount, start_loc, end_loc, prev_hash):
+    def __init__(self, sender, receiver, amount, start_loc, end_loc, prev_hash = 0):
         self.sender = sender
         self.receiver = receiver
         self.amount = amount
@@ -12,6 +12,6 @@ class ContractBlock(Block):
         self.prev_hash = prev_hash
         self.hash = self.computeHash()
 
-    def compute_hash(self):
+    def computeHash(self):
         block_string = f"{self.sender}{self.receiver}{self.amount}{self.start_loc}{self.end_loc}{self.prev_hash}"
         return hashlib.sha256(block_string.encode()).hexdigest()
