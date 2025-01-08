@@ -12,6 +12,6 @@ class ContractBlock(Block):
         self.prev_hash = prev_hash
         self.hash = self.computeHash()
 
-        def compute_hash(self):
-            block_string = f"{self.sender}{self.receiver}{self.amount}{self.prev_hash}"
-            return hashlib.sha256(block_string.encode()).hexdigest()
+    def compute_hash(self):
+        block_string = f"{self.sender}{self.receiver}{self.amount}{self.start_loc}{self.end_loc}{self.prev_hash}"
+        return hashlib.sha256(block_string.encode()).hexdigest()
