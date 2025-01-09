@@ -1,4 +1,4 @@
-from block import block
+from Block import block
 
 class blockChain:
 

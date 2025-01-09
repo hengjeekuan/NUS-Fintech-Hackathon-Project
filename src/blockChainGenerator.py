@@ -1,8 +1,7 @@
 import random
 import csv
 from blockChain import blockChain
-from block import block
-import json
+from Block import block
 
 with open("src/metaverse_transactions_dataset.csv", 'r', newline='') as file:
     reader = csv.DictReader(file)
@@ -45,14 +44,12 @@ def create_blockchains(dataset, numOfBlockChains : int, failedHashRate : float =
         
         curr = training_data[i]
         training_data_blockchain[j].add_block(block(categorise_amount(curr["amount"]), curr["transaction_type"], categorise_login_freq(curr["login_frequency"]),
-                                                    categorise_session_dur(curr["session_duration"]), curr["purchase_pattern"], curr["age_group"], curr["risk_score"],
-                                                    curr["anomaly"],
+                                                    categorise_session_dur(curr["session_duration"]), curr["purchase_pattern"], curr["age_group"], curr["anomaly"],
                                                     training_data_blockchain[j].get_last_block_hash() if k else training_data_blockchain[j].get_last_block_hash()[::-1]))
         
         curr = test_data[i]
         test_data_blockchain[j].add_block(block(categorise_amount(curr["amount"]), curr["transaction_type"], categorise_login_freq(curr["login_frequency"]),
-                                                categorise_session_dur(curr["session_duration"]),
-                                                curr["purchase_pattern"], curr["age_group"], curr["risk_score"], curr["anomaly"],
+                                                categorise_session_dur(curr["session_duration"]), curr["purchase_pattern"], curr["age_group"], curr["anomaly"],
                                                 test_data_blockchain[j].get_last_block_hash() if k else test_data_blockchain[j].get_last_block_hash()[::-1]))
         
     
