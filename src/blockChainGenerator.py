@@ -43,70 +43,50 @@ def create_blockchains(dataset, numOfBlockChains : int, failedHashRate : float =
         k = random.random() >= failedHashRate
         
         curr = training_data[i]
-        training_data_blockchain[j].add_block(block(categorise_amount(curr["amount"]), curr["transaction_type"], categorise_login_freq(curr["login_frequency"]),
-                                                    categorise_session_dur(curr["session_duration"]), curr["purchase_pattern"], curr["age_group"], curr["anomaly"],
+        training_data_blockchain[j].add_block(block(curr["amount"], curr["transaction_type"], curr["login_frequency"],
+                                                    curr["session_duration"], curr["purchase_pattern"], curr["age_group"], curr["anomaly"],
                                                     training_data_blockchain[j].get_last_block_hash() if k else training_data_blockchain[j].get_last_block_hash()[::-1]))
         
         curr = test_data[i]
-        test_data_blockchain[j].add_block(block(categorise_amount(curr["amount"]), curr["transaction_type"], categorise_login_freq(curr["login_frequency"]),
-                                                categorise_session_dur(curr["session_duration"]), curr["purchase_pattern"], curr["age_group"], curr["anomaly"],
+        test_data_blockchain[j].add_block(block(curr["amount"], curr["transaction_type"], curr["login_frequency"],
+                                                curr["session_duration"], curr["purchase_pattern"], curr["age_group"], curr["anomaly"],
                                                 test_data_blockchain[j].get_last_block_hash() if k else test_data_blockchain[j].get_last_block_hash()[::-1]))
         
     
     return training_data_blockchain, test_data_blockchain
 
- 
-def categorise_amount(amt):
-    amt = float(amt)
-    if amt < 500:
-        return "amt < 500"
-    elif amt < 1000:
-        return "500 <= amt < 1000"
-    else:
-        return "amt >= 1000"
+a, b = create_blockchains(data, 20, 0.00005, 10)
+
+def create_dtl_dataset_from_blockchain(a, b):
+    training_data_dict = []
+    test_data_dict = []
     
-def categorise_login_freq(freq):
-    freq = int(freq)
-    if freq <= 2:
-        return "freq <= 2"
-    elif freq <= 4:
-        return "2 < freq <= 4"
-    elif freq <= 6:
-        return "4 < freq <= 6"
-    else:
-        return ">= 6"
-    
-def categorise_session_dur(time):
-    time = int(time)
-    if time <= 40:
-        return "time <= 40"
-    elif time <= 80:
-        return "40 < time <= 80"
-    elif time <= 120:
-        return "80 < time <= 120"
-    else:
-        return ">= 120"
+    chains_that_were_tampered = []
 
-a, b = create_blockchains(data, 20, 0.01, 10)
+    for i in range(len(a)):
+        if not a[i].is_chain_valid():
+            chains_that_were_tampered.append(a[i].chain)
+            continue
 
-training_data_dict = []
-test_data_dict = []
+        for j in range(len(a[i].chain)):
+            training_data_dict.append(a[i].chain[j].toDict(i))
 
-for i in range(len(a)):
-    for j in range(len(a[i].chain)):
-        training_data_dict.append(a[i].chain[j].toDict(i))
+    for i in range(len(b)):
+        if not b[i].is_chain_valid():
+            chains_that_were_tampered.append(b[i].chain)
+            continue
 
-for i in range(len(b)):
-    for j in range(len(b[i].chain)):
-        test_data_dict.append(b[i].chain[j].toDict(i))
+        for j in range(len(b[i].chain)):
+            test_data_dict.append(b[i].chain[j].toDict(i))
 
+    with open("src/training_dataset.csv", "w", newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=training_data_dict[0].keys())
+        writer.writeheader()
+        writer.writerows(training_data_dict)
 
-with open("src/training_dataset.csv", "w", newline='') as file:
-    writer = csv.DictWriter(file, fieldnames=training_data_dict[0].keys())
-    writer.writeheader()
-    writer.writerows(training_data_dict)
+    with open("src/test_dataset.csv", "w", newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=test_data_dict[0].keys())
+        writer.writeheader()
+        writer.writerows(test_data_dict)
 
-with open("src/test_dataset.csv", "w", newline='') as file:
-    writer = csv.DictWriter(file, fieldnames=test_data_dict[0].keys())
-    writer.writeheader()
-    writer.writerows(test_data_dict)
+create_dtl_dataset_from_blockchain(a, b)
