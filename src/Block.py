@@ -1,14 +1,13 @@
 import hashlib
 
 class block:
-    def __init__(self, amount, txn_type, login_freq, sess_dur, pattern, age, risk_score, anomaly, prev_hash):
+    def __init__(self, amount, txn_type, login_freq, sess_dur, pattern, age, anomaly, prev_hash):
         self.amount = amount
         self.txn_type = txn_type
         self.login_freq = login_freq
         self.sess_dur = sess_dur
         self.pattern = pattern
         self.age = age
-        self.risk_score = risk_score
         self.anomaly = anomaly
         self.hash = self.computeHash()
         self.prev_hash = prev_hash
@@ -28,6 +27,5 @@ class block:
             "blockchain_num" : num,
             "hash" : self.hash,
             "prev_hash" : self.prev_hash,
-            "risk_score" : self.risk_score,
             "anomaly" : self.anomaly
         }
