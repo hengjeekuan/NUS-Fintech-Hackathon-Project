@@ -1,6 +1,6 @@
-from Block import Block
+from block import block
 
-class BlockChain:
+class blockChain:
 
     def __init__(self):
         self.chain = []
