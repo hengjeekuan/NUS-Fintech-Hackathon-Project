@@ -24,8 +24,5 @@ class block:
             "sess_dur" : self.sess_dur,
             "pattern" : self.pattern,
             "age" : self.age,
-            "blockchain_num" : num,
-            "hash" : self.hash,
-            "prev_hash" : self.prev_hash,
             "anomaly" : self.anomaly
         }

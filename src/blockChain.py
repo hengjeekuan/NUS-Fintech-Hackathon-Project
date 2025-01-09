@@ -15,12 +15,12 @@ class blockChain:
     def is_chain_valid(self):
         for i in range(1, len(self.chain)):
             current_block = self.chain[i]
-            prev_block = self.chain[1 - 1]
+            prev_block = self.chain[i - 1]
 
-            if current_block.hash != current_block.compute_hash():
+            if current_block.hash != current_block.computeHash():
                 return False
             
-            if current_block.previous_hash != prev_block.hash:
+            if current_block.prev_hash != prev_block.hash:
                 return False
         
         return True
